@@ -1,9 +1,8 @@
 import requests
+import ssl
 import re
-from pymongo import MongoClient
+import pymongo
 import datetime
-
-
 class Anime():
     name = ''
     clean = ''
@@ -68,26 +67,23 @@ for i in range(0,len(l)):
                 image = image.replace('" />','')
                 anime = Anime(n,c,completo,image)
 
-                try: 
-                    client = MongoClient("mongodb+srv://dai96:tammaro96@anime-mlyde.mongodb.net/test?retryWrites=true&w=majority")
-                    print("Connessione a MongoDB avvenuta con successo") 
-                    db = client['db']
-                    collection = db['list']
-                    post = {
-                        "name": anime.name,
-                        "clean": anime.clean,
-                        "episodi": anime.episodes,
-                        "image": anime.image,
-                        "date": datetime.datetime.utcnow()
-                    }
+                client = pymongo.MongoClient("mongodb+srv://dai96:tammaro96@anime-mlyde.mongodb.net/test?retryWrites=true&w=majority",ssl=True,ssl_cert_reqs=ssl.CERT_NONE)
+                print("Connessione a MongoDB avvenuta con successo") 
+                db = client['db']
+                collection = db['list']
+                post = {
+                    "name": anime.name,
+                    "clean": anime.clean,
+                    "episodi": anime.episodes,
+                    "image": anime.image,
+                    "date": datetime.datetime.utcnow()
+                }
+                
+                query = { 'name' : anime.name }
+                collection.replace_one(query,post,True)
+                print("Anime aggiornato")
                     
-                    query = { 'name' : anime.name }
-                    collection.replace_one(query,post,True)
-                    print("Anime aggiornato")
-                    
-                    print("Fine connessione")
-                except:   
-                    print("Connessione al DB persa") 
+                print("Fine connessione")
         else:
             print("Anime non disponibile")
 
