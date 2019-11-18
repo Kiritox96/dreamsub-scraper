@@ -8,5 +8,5 @@ RUN pip install pymongo
 
 COPY ./pi.py /
 
-ENTRYPOINT python pi.py >> /tmp/output.log 2>&1
+ENTRYPOINT python pi.py 
 

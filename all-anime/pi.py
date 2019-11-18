@@ -9,12 +9,13 @@ class Anime():
     clean = ''
     episodes = []
     image = ''
-    
-    def __init__(self,name,clean,episodes,image):
+    genere = []
+    def __init__(self,name,clean,episodes,image,genere):
         self.name = name
         self.clean = clean
         self.episodes = episodes
         self.image = image
+        self.genere = genere
     def str(self):
         return "The name is " + self.name + " and the clean is " + self.clean 
 
@@ -40,9 +41,15 @@ while 1:
                 n = n.replace('</a>','')
                 urlInfo = "https://www.dreamsub.stream/anime/"+c
                 print("URL anime " + urlInfo)
-                if urlInfo != 'https://www.dreamsub.stream/anime/b-daman-crossfire':
+                if urlInfo != 'https://www.dreamsub.stream/anime/b-daman-crossfire' and urlInfo != 'https://www.dreamsub.stream/anime/megaman-axess' :
                     req = requests.get(urlInfo)
                     pop = re.findall(r'<li>.+?</li>',req.text)
+                    gen = re.findall(r'Genere:.+?">',req.text)
+                    genere = []
+                    for index in range(0,len(gen)):
+                        r = gen[index].replace('Genere: ','')
+                        r = r.replace('">','')
+                        genere.append(r)
                     episodes = []
                     completo = []
                     for j in range(0,len(pop)):
@@ -67,23 +74,28 @@ while 1:
                     image = re.findall(r'property="og:image".+?/>',req.text)
                     image = image[0].replace('property="og:image"         content="','')
                     image = image.replace('" />','')
-                    anime = Anime(n,c,completo,image)
+                    anime = Anime(n,c,completo,image,genere)
     
                     client = pymongo.MongoClient("mongodb+srv://dai96:tammaro96@anime-mlyde.mongodb.net/test?retryWrites=true&w=majority",ssl=True,ssl_cert_reqs=ssl.CERT_NONE)
                     print("Connessione a MongoDB avvenuta con successo") 
                     db = client['db']
-                    collection = db['list']
+                    collection = db['animes']
                     post = {
                         "name": anime.name,
                         "clean": anime.clean,
                         "episodi": anime.episodes,
                         "image": anime.image,
+                        "genere":anime.genere,
                         "date": datetime.datetime.utcnow()
                     }
-                     
-                    query = { 'name' : anime.name }
-                    collection.replace_one(query,post,True)
-                    print("Anime aggiornato")
+                    if 'span class' in anime.name:
+                        print("Questo anime sta dando problemi")
+                        print(anime.name)
+                        print(anime.clean)
+                    else:
+                        query = { 'name' : anime.name }
+                        collection.replace_one(query,post,True)
+                        print("Anime aggiornato")
                         
                     print("Fine connessione")
             else:
