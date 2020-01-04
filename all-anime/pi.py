@@ -21,7 +21,7 @@ class Anime():
 
 while 1:
     print("Richiesta iniziata")
-    
+     
     r = requests.get("https://www.dreamsub.stream/A-Z")
     print(r)
     l = re.findall(r'<td>.+?</td>',r.text)
