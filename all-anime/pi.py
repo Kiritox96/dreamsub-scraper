@@ -8,6 +8,7 @@ def main():
     updateCalendar("https://dreamsub.stream/")
     
     for i in range(0,64):
+        time.sleep(5)
         print("Init the anime list " + str(i) + " of 64")
         if(i==0):
             initiate('https://dreamsub.stream/search/?q=')
@@ -18,15 +19,14 @@ def main():
             
     for anime in results:
         # ===========================FILTRO LETTERA CLEAN ANIME ======================================
-        #if(anime.clean[0] == 'o'):
         anime = getInfoEpisodes('https://dreamsub.stream/anime/'+anime.clean,anime)
-    
+
         print("Oggetto risultato:")
         print(anime.__dict__)
         try: 
             client = pymongo.MongoClient("mongodb+srv://dai96:tammaro96@anime-mlyde.mongodb.net/")
             print("Connessione a MongoDB avvenuta con successo") 
-            db = client['db']
+            db = client['list']
             coll = db['animes']
             print(coll.find_one({"clean": anime.clean}))
             if(coll.find_one({"clean": anime.clean})):
@@ -40,13 +40,14 @@ def main():
         #======================================= FINE FILTRO====================================
     
 def getInfoEpisodes(url,anime):
+    time.sleep(2)
     r = requests.get(url)
     parser = AdvancedHTMLParser.AdvancedHTMLParser()
     parser.parseStr(r.text)
 
     player = parser.getElementById('media-play')
     if(player):
-        if(player.children[0]):
+        if(len(player.children)>0):
             child = player.children[0]
             if(child):
                 listren = child.attributes.get('src')
@@ -71,19 +72,20 @@ def getInfoEpisodes(url,anime):
             
             secondo = child.getAllNodes().getElementsByTagName('span')[0]
             data = secondo.innerHTML
-    
-            episodio = Episodio(titolo, "https://dreamsub.stream"+href, data)
-            # ==================== FILTRO EPISODI TBA =======================
-            '''
-            if(episodio.titolo != 'TBA'):
-            '''
-            tupla = getLinksEpisodes(episodio.url,anime,episodio)
-            episodio = tupla[0]
-            anime = tupla[1]
-            #=================FINE TBA===========================
+            if(href): 
+                episodio = Episodio(titolo, "https://dreamsub.stream"+str(href), data)
+                # ==================== FILTRO EPISODI TBA =======================
+            
+                if('TBA' in episodio.titolo or 'none' in episodio.url):
+                    pass
+                else:
+                    tupla = getLinksEpisodes(episodio.url,anime,episodio)
+                    episodio = tupla[0]
+                    anime = tupla[1]
+                #=================FINE TBA===========================
 
-            list_episodi.append(episodio.__dict__)
-            i = i + 1
+                list_episodi.append(episodio.__dict__)
+                i = i + 1
         
   
     anime.episodi = list_episodi
@@ -91,6 +93,7 @@ def getInfoEpisodes(url,anime):
   
 
 def getLinksEpisodes(url,anime,episodio):
+    time.sleep(2)
     r = requests.get(url)
     parser = AdvancedHTMLParser.AdvancedHTMLParser()
     parser.parseStr(r.text)
@@ -144,7 +147,7 @@ def initiate(url):
     for link in links:
         name = ''
         if(link.children[0]):
-            name = str(link.children[0].getAllNodes()[0].children[0].innerHTML)
+            name = link.children[0].getAllNodes()[0].children[0].innerHTML
         image_url = ''
         clean = ''
         if(link.children[1]):
@@ -190,7 +193,7 @@ def updateCalendar(url):
                 list_day = []
                 for an in day:
                     ll = an.getAllNodes().getElementsByTagName('a')[0].attributes.get('href')[7::]
-                    list_day.append(ll)
+                    list_day.append(str(ll))
                 if(i == 0):
                     lunedi = list_day
                 elif (i == 1):
@@ -212,7 +215,7 @@ def updateCalendar(url):
                 print("=====")
      
         client = pymongo.MongoClient("mongodb+srv://dai96:tammaro96@anime-mlyde.mongodb.net/")
-        db = client['db']
+        db = client['list']
         coll = db['others']
         obj = {"type":"calendario","date":datetime.datetime.utcnow(),"lunedi": lunedi,"martedi": martedi,"mercoledi": mercoledi,"giovedi": giovedi,"venerdi": venerdi,"sabato": sabato,"domenica": domenica}
         if(coll.find_one({"type": "calendario"}) != None):
