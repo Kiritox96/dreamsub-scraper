@@ -8,7 +8,7 @@ while(1):
     
     links = []
 
-    for i in range(12,15): # 1..119
+    for i in range(1,119): # 1..119
         r = requests.get("https://www.animeworld.cc/az-list?page=" + str(i))
         parser = AdvancedHTMLParser.AdvancedHTMLParser()
         parser.parseStr(r.text)
