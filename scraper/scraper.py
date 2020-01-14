@@ -2,6 +2,7 @@ import requests
 import AdvancedHTMLParser
 import datetime 
 import pymongo
+import time
 
 while(1):
     

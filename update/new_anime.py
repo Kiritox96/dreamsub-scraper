@@ -1,7 +1,7 @@
 import requests
 import AdvancedHTMLParser
 import pymongo
-
+import time
 while(1):
     
     ultimi = []
