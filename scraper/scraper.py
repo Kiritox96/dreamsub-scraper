@@ -47,7 +47,7 @@ while(1):
                 print("========== Anime su vvvid ==========")
                 isVVVID = True
             # streaming episodi
-            active = parser.getElementsByClassName('episodes range active')[0].getAllNodes().getElementsByTagName('a')
+            active = parser.getElementsByClassName('widget-body')[0].getAllNodes().getElementsByTagName('a')
             for stream in active:
                 episode = stream.attributes.get('data-id')
                 if isVVVID:

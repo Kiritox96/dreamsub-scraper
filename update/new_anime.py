@@ -33,4 +33,6 @@ while(1):
         coll.insert_one(obj)
         
     time.sleep(1000)
+    
+   
 
