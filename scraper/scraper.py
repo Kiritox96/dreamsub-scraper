@@ -47,12 +47,14 @@ while(1):
                 print("========== Anime su vvvid ==========")
                 isVVVID = True
             # streaming episodi
-            active = parser.getElementById('animeId').getElementsByClassName('widget-body')[0].getAllNodes().getElementsByTagName('a')
+            anime = parser.getElementById('animeId').
+            active = parser.getElementById('animeId').getElementsByClassName('server active')[0].getAllNodes().getElementsByTagName('a')
             #print(active)
             
             for stream in active:
                 episode = stream.attributes.get('data-id')
                 if isVVVID:
+                
                     streaming.append("https://www.vvvvid.it/channel/0/you&r")
                 else:
                     streaming.append("https://www.animeworld.cc/ajax/episode/serverPlayer?id="+str(episode))
