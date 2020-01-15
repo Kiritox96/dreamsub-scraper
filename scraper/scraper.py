@@ -47,7 +47,7 @@ while(1):
                 print("========== Anime su vvvid ==========")
                 isVVVID = True
             # streaming episodi
-            anime = parser.getElementById('animeId').
+            
             active = parser.getElementById('animeId').getElementsByClassName('server active')[0].getAllNodes().getElementsByTagName('a')
             #print(active)
             
