@@ -47,13 +47,16 @@ while(1):
                 print("========== Anime su vvvid ==========")
                 isVVVID = True
             # streaming episodi
-            active = parser.getElementsById('animeId')[0].getAllNodes().getElementsByTagName('a')
+            active = parser.getElementById('animeId').getElementsByClassName('widget-body')[0].getAllNodes().getElementsByTagName('a')
+            #print(active)
+            
             for stream in active:
                 episode = stream.attributes.get('data-id')
                 if isVVVID:
                     streaming.append("https://www.vvvvid.it/channel/0/you&r")
                 else:
                     streaming.append("https://www.animeworld.cc/ajax/episode/serverPlayer?id="+str(episode))
+            
         except:
             print("========== Serie non disponibile ==========")
             print(name)
@@ -65,6 +68,7 @@ while(1):
         data['episodi'] = streaming
         print('========== DATA ==========')
         print(data)
+        
         client = pymongo.MongoClient("mongodb+srv://dai96:tammaro96@anime-mlyde.mongodb.net/")
         db = client['archivi']
         coll = db['world']
@@ -74,6 +78,7 @@ while(1):
         else:
             print('========== Nuovo anime ==========')
             coll.insert_one(data)
+        
 
     time.sleep(1000)
         
