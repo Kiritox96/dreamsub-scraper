@@ -65,6 +65,7 @@ while(1):
         data = {}
         data['name'] = name
         data['image'] = img
+        data['trama'] = trama
         data['last_update'] = dt
         data['generi'] = lista_generi
         data['episodi'] = streaming
