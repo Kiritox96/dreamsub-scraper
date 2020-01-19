@@ -66,7 +66,7 @@ for link in links:
         parser.parseStr(r.text)
         video = parser.getElementById('video-player').getAllNodes().getElementsByTagName('source')[0].attributes.get('src')
         streaming.append(video)
-        time.sleep(2)
+        time.sleep(1)
         j=j+1
 
             
@@ -80,7 +80,7 @@ for link in links:
     data['episodi'] = streaming
     print('========== DATA ==========')
     print(data)      
-    '''
+    
     client = pymongo.MongoClient("mongodb+srv://dai96:tammaro96@anime-mlyde.mongodb.net/")
     db = client['archivi']
     coll = db['unity']
@@ -90,5 +90,5 @@ for link in links:
     else:
         print('========== Nuovo anime ==========')
         coll.insert_one(data)
-    '''
-    time.sleep(5)
+    
+    time.sleep(2)
