@@ -6,7 +6,7 @@ RUN pip install dnspython
 
 RUN pip install pymongo
 
-COPY ./scraper.py /
+COPY ./scr.py /
 
-ENTRYPOINT python scraper.py 
+ENTRYPOINT python scr.py 
 
