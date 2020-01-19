@@ -86,7 +86,7 @@ for link in links:
     print('========== DATA ==========')
     print(data)     
     i = i+1 
-    '''
+
     client = pymongo.MongoClient("mongodb+srv://dai96:tammaro96@anime-mlyde.mongodb.net/")
     db = client['archivi']
     coll = db['unity']
@@ -96,5 +96,5 @@ for link in links:
     else:
         print('========== Nuovo anime ==========')
         coll.insert_one(data)
-    '''
-    #time.sleep(2)
+    
+    time.sleep(2)
