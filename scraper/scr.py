@@ -16,6 +16,7 @@ for child in children:
 
 i = 0
 for link in links:
+    
     r = requests.get(link)
     parser = AdvancedHTMLParser.AdvancedHTMLParser()
     parser.parseStr(r.text)
@@ -50,27 +51,31 @@ for link in links:
             trama = due.replace("<b >TRAMA: </b>","")
             
     # episodi
-    eps = parser.getElementById('myTabContent').getAllNodes().getElementsByClassName('ep-box col-lg-1 col-sm-1')
     episodi = []
-    for ep in eps:
-        ll = ep.getAllNodes().getElementsByTagName('a')[0].attributes.get('href')
-        string = "https://animeunity.it/"+ll
-        episodi.append(string)
     streaming = []
-    j = 0
-    for stream in episodi:
-        print("Episodio " + str(j) + " of " + str(len(episodi)))
 
-        r = requests.get(stream)
-        parser = AdvancedHTMLParser.AdvancedHTMLParser()
-        parser.parseStr(r.text)
-        video = parser.getElementById('video-player').getAllNodes().getElementsByTagName('source')[0].attributes.get('src')
-        streaming.append(video)
-        time.sleep(1)
-        j=j+1
+    eps = parser.getElementById('myTabContent')
+    if eps:
+        nn = eps.getAllNodes().getElementsByClassName('ep-box col-lg-1 col-sm-1')
+    
+        for ep in nn:
+            ll = ep.getAllNodes().getElementsByTagName('a')[0].attributes.get('href')
+            string = "https://animeunity.it/"+ll
+            episodi.append(string)
+        j = 0
+        for stream in episodi:
+            print("Episodio " + str(j) + " of " + str(len(episodi)))
+
+            r = requests.get(stream)
+            parser = AdvancedHTMLParser.AdvancedHTMLParser()
+            parser.parseStr(r.text)
+            video = parser.getElementById('video-player').getAllNodes().getElementsByTagName('source')[0].attributes.get('src')
+            streaming.append(video)
+            time.sleep(1)
+            j=j+1
 
             
-    i = i+1
+        
     data = {}
     data['name'] = title
     data['image'] = img
@@ -79,8 +84,9 @@ for link in links:
     data['generi'] = generi
     data['episodi'] = streaming
     print('========== DATA ==========')
-    print(data)      
-    
+    print(data)     
+    i = i+1 
+    '''
     client = pymongo.MongoClient("mongodb+srv://dai96:tammaro96@anime-mlyde.mongodb.net/")
     db = client['archivi']
     coll = db['unity']
@@ -90,5 +96,5 @@ for link in links:
     else:
         print('========== Nuovo anime ==========')
         coll.insert_one(data)
-    
-    time.sleep(2)
+    '''
+    #time.sleep(2)
